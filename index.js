@@ -1,6 +1,7 @@
 import { getChatMessages, sendMessage } from "./services/youtube.js";
 import { getJoke } from "./services/joke.js";
 import { getWeather } from "./services/weather.js";
+import { getIntro } from "./services/intro.js"; 
 
 let nextPageToken = null;
 
@@ -21,12 +22,21 @@ async function pollChat() {
           await sendMessage(joke);
         }
 
-        if (message.startsWith("!weather")) {
+        else if (message.startsWith("!weather")) {
           const parts = message.split(" ");
           const city = parts[1] || "Delhi";
           const weather = await getWeather(city);
           await sendMessage(weather);
         }
+
+        else if (message.startsWith("!")) {
+          const command = message.substring(1).toLowerCase();
+          const intro = getIntro(command);
+          if (intro) {
+            await sendMessage(intro);
+          }
+        }
+
       }
     }
   } catch (err) {
